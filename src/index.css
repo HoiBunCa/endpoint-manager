@@ -1,0 +1,43 @@
+html, body, #root {
+  height: 100%; /* Ensure full height for the root elements */
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Smooth transitions */
+.sidebar-transition {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Prevent body scroll when sidebar is open on mobile */
+@media (max-width: 1023px) {
+  body.sidebar-open {
+    overflow: hidden;
+  }
+}
+
+/* Fix for leaflet maps */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
