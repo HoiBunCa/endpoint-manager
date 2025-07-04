@@ -46,6 +46,7 @@ import DeviceMap from '../Maps/DeviceMap';
 import RemoteControl from '../RemoteControl/RemoteControl';
 import CustomRemoteControlButton from '../RemoteControl/CustomRemoteControlButton'; // Import the new component
 import DeviceChat from '../Chat/DeviceChat';
+import LockComputerDialog from '../Dialogs/LockComputerDialog'; // Import the new dialog
 
 // Helper function to safely format date distance
 const safeFormatDistanceToNow = (dateString: string | undefined, addSuffix: boolean = true) => {
@@ -80,6 +81,8 @@ const DeviceDetail: React.FC = () => {
   const [isDvdLocked, setIsDvdLocked] = useState(false); // State for DVD lock
   const [isCtrlAltDelLocked, setIsCtrlAltDelLocked] = useState(false); // State for Ctrl+Alt+Del lock
   const [isUacLocked, setIsUacLocked] = useState(false); // New state for UAC lock
+  const [isComputerLocked, setIsComputerLocked] = useState(false); // New state for Computer lock
+  const [showLockComputerDialog, setShowLockComputerDialog] = useState(false); // New state for lock computer dialog
 
   useEffect(() => {
     if (id) {
@@ -103,6 +106,7 @@ const DeviceDetail: React.FC = () => {
       setIsDvdLocked(false);
       setIsCtrlAltDelLocked(false);
       setIsUacLocked(false); // Initialize UAC lock state
+      setIsComputerLocked(false); // Initialize computer lock state
     } catch (error) {
       console.error('Failed to load device:', error);
       addNotification({
@@ -112,6 +116,34 @@ const DeviceDetail: React.FC = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLockComputer = async (timeout: number) => {
+    if (!device?.systemUuid) {
+      addNotification({
+        type: 'error',
+        title: 'Action Failed',
+        message: 'Device System UUID not available for computer lock.'
+      });
+      return;
+    }
+    try {
+      await apiService.lockComputer(device.systemUuid, timeout);
+      setIsComputerLocked(true);
+      addNotification({
+        type: 'success',
+        title: 'Action Executed',
+        message: `Computer locked on ${device.hostname} for ${timeout / 3600000} hours`
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Action Failed',
+        message: `Failed to lock computer on ${device.hostname}`
+      });
+    } finally {
+      setShowLockComputerDialog(false);
     }
   };
 
@@ -337,6 +369,27 @@ const DeviceDetail: React.FC = () => {
             message: `UAC locked on ${device.hostname}`
           });
         }
+      } else if (action === 'toggle_computer_lock') { // Handle Computer Lock/Unlock
+        if (!device.systemUuid) {
+          addNotification({
+            type: 'error',
+            title: 'Action Failed',
+            message: 'Device System UUID not available for computer lock/unlock.'
+          });
+          return;
+        }
+
+        if (isComputerLocked) {
+          await apiService.unlockComputer(device.systemUuid);
+          setIsComputerLocked(false);
+          addNotification({
+            type: 'success',
+            title: 'Action Executed',
+            message: `Computer unlocked on ${device.hostname}`
+          });
+        } else {
+          setShowLockComputerDialog(true); // Show dialog to select timeout
+        }
       }
       else {
         // For other generic actions, continue using device.id or device.systemUuid as appropriate for the specific API
@@ -507,8 +560,7 @@ const DeviceDetail: React.FC = () => {
     { name: 'Speaker Control', action: 'toggle_speaker', imageSrc: '/assets/images/icon-images/speaker.png', color: 'bg-gray-100', isLocked: isSpeakerLocked },
     { name: 'Power Off', action: 'power_off', imageSrc: '/assets/images/icon-images/power_off.png', color: 'bg-gray-100' },
     { name: 'Clear App Running', action: 'clear_running_apps', imageSrc: '/assets/images/icon-images/clear_running_apps.png', color: 'bg-gray-100' },
-    { name: 'Lock Computer', action: 'lock_computer', imageSrc: '/assets/images/icon-images/computer.png', color: 'bg-gray-100' },
-    { name: 'Unlock Computer', action: 'unlock_computer', imageSrc: '/assets/images/icon-images/computer.png', color: 'bg-gray-100' },
+    { name: isComputerLocked ? 'Unlock Computer' : 'Lock Computer', action: 'toggle_computer_lock', imageSrc: '/assets/images/icon-images/computer.png', color: 'bg-gray-100', isLocked: isComputerLocked }, // Combined Lock/Unlock Computer
     { name: 'USB Control', action: 'toggle_usb', imageSrc: '/assets/images/icon-images/usb.png', color: 'bg-gray-100', isLocked: isUsbLocked },
     { name: 'Print Control', action: 'toggle_printer', imageSrc: '/assets/images/icon-images/print.png', color: 'bg-gray-100', isLocked: isPrinterLocked },
     { name: 'Security Control', action: 'toggle_security', imageSrc: '/assets/images/icon-images/security.png', color: 'bg-gray-100', isLocked: isSecurityLocked },
@@ -957,6 +1009,14 @@ const DeviceDetail: React.FC = () => {
         <RemoteControl
           device={device}
           onClose={() => setShowRemoteControl(false)}
+        />
+      )}
+
+      {/* Lock Computer Dialog */}
+      {showLockComputerDialog && (
+        <LockComputerDialog
+          onLock={handleLockComputer}
+          onClose={() => setShowLockComputerDialog(false)}
         />
       )}
     </div>

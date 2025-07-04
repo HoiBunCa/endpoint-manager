@@ -815,6 +815,45 @@ class ApiService {
     }
   }
 
+  // API calls for Lock/Unlock Computer
+  async lockComputer(systemUuid: string, timeout: number): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/lock-computer/${systemUuid}/`, {
+        method: 'POST',
+        headers: this._getAuthHeaders(),
+        body: JSON.stringify({ timeout })
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`Failed to lock computer for device ${systemUuid}:`, errorData);
+        throw new Error(`Failed to lock computer for device ${systemUuid}`);
+      }
+      return true;
+    } catch (error) {
+      console.error('Error in lockComputer:', error);
+      throw error;
+    }
+  }
+
+  async unlockComputer(systemUuid: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/unlock-computer/${systemUuid}/`, {
+        method: 'POST',
+        headers: this._getAuthHeaders(),
+        body: JSON.stringify({})
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`Failed to unlock computer for device ${systemUuid}:`, errorData);
+        throw new Error(`Failed to unlock computer for device ${systemUuid}`);
+      }
+      return true;
+    } catch (error) {
+      console.error('Error in unlockComputer:', error);
+      throw error;
+    }
+  }
+
   // Remote Control
   async startRemoteControl(deviceId: string): Promise<boolean> {
     await this.delay(1000);
