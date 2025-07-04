@@ -12,6 +12,7 @@ import {
   ChevronRight // New icon for expand
 } from 'lucide-react';
 import { clsx } from 'clsx';
+import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 interface SidebarProps {
   isOpen: boolean;
@@ -22,13 +23,14 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed, onCollapseToggle }) => {
   const location = useLocation();
+  const { t } = useTranslation(); // Use translation hook
 
   const menuItems = [
-    { path: '/dashboard', icon: BarChart3, label: 'Dashboard' },
-    { path: '/devices', icon: Monitor, label: 'Devices' },
-    { path: '/blocking-policy', icon: Shield, label: 'Blocking Policy' },
-    { path: '/departments', icon: Building, label: 'Departments' },
-    { path: '/user-management', icon: UserCog, label: 'User Management' },
+    { path: '/dashboard', icon: BarChart3, labelKey: 'dashboard' },
+    { path: '/devices', icon: Monitor, labelKey: 'devices' },
+    { path: '/blocking-policy', icon: Shield, labelKey: 'blocking_policy' },
+    { path: '/departments', icon: Building, labelKey: 'departments' },
+    { path: '/user-management', icon: UserCog, labelKey: 'user_management' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -110,7 +112,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed, onColl
                       "transition-opacity duration-300",
                       isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
                     )}>
-                      {item.label}
+                      {t(item.labelKey as any)} {/* Use t() for translation */}
                     </span>
                   </Link>
                 </li>
@@ -133,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, isCollapsed, onColl
               "p-2 rounded-lg hover:bg-gray-100 transition-colors",
               isCollapsed ? "w-full justify-center flex" : ""
             )}
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={isCollapsed ? t('expand_sidebar') : t('collapse_sidebar')}
           >
             {isCollapsed ? (
               <ChevronRight className="w-5 h-5 text-gray-600" />

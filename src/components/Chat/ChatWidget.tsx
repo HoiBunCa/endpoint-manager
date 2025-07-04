@@ -3,12 +3,14 @@ import { MessageCircle, X, Send } from 'lucide-react';
 import { ChatMessage } from '../../types';
 import { apiService } from '../../services/apiService';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 const ChatWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
+  const { t } = useTranslation(); // Use translation hook
 
   useEffect(() => {
     loadRecentMessages();
@@ -59,8 +61,8 @@ const ChatWidget: React.FC = () => {
         <div className="fixed bottom-24 right-6 w-80 h-96 bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col z-50">
           {/* Header */}
           <div className="p-4 border-b border-gray-200">
-            <h3 className="font-semibold text-gray-900">Device Chat</h3>
-            <p className="text-sm text-gray-600">Chat with connected devices</p>
+            <h3 className="font-semibold text-gray-900">{t('device_chat')}</h3>
+            <p className="text-sm text-gray-600">{t('chat_with_connected_devices')}</p>
           </div>
 
           {/* Chat Content */}
@@ -68,7 +70,7 @@ const ChatWidget: React.FC = () => {
             {!selectedDeviceId ? (
               /* Device List */
               <div className="flex-1 p-4 space-y-2">
-                <h4 className="text-sm font-medium text-gray-700 mb-2">Select a device to chat</h4>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">{t('select_device_to_chat')}</h4>
                 {Object.keys(messagesByDevice).map(deviceId => {
                   const deviceMessages = messagesByDevice[deviceId];
                   const lastMessage = deviceMessages[deviceMessages.length - 1];
@@ -82,7 +84,7 @@ const ChatWidget: React.FC = () => {
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <div className="font-medium text-gray-900">Device {deviceId}</div>
+                          <div className="font-medium text-gray-900">{t('device')} {deviceId}</div>
                           <div className="text-sm text-gray-600 truncate">
                             {lastMessage.message}
                           </div>
@@ -100,7 +102,7 @@ const ChatWidget: React.FC = () => {
                   );
                 })}
                 {Object.keys(messagesByDevice).length === 0 && (
-                  <p className="text-gray-500 text-center py-8">No conversations yet</p>
+                  <p className="text-gray-500 text-center py-8">{t('no_conversations_yet')}</p>
                 )}
               </div>
             ) : (
@@ -111,9 +113,9 @@ const ChatWidget: React.FC = () => {
                     onClick={() => setSelectedDeviceId(null)}
                     className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                   >
-                    ← Back
+                    ← {t('back')}
                   </button>
-                  <span className="text-sm font-medium">Device {selectedDeviceId}</span>
+                  <span className="text-sm font-medium">{t('device')} {selectedDeviceId}</span>
                 </div>
                 
                 <div className="flex-1 p-4 space-y-3 overflow-y-auto">
@@ -147,7 +149,7 @@ const ChatWidget: React.FC = () => {
                       type="text"
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Type a message..."
+                      placeholder={t('type_your_message')}
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       onKeyPress={(e) => {
                         if (e.key === 'Enter') {

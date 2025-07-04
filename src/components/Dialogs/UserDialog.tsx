@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { User, Department } from '../../types';
 import { apiService } from '../../services/apiService';
 import { useNotification } from '../../contexts/NotificationContext';
+import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 interface UserDialogProps {
   user: User | null;
@@ -21,6 +22,7 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
   });
   const [loading, setLoading] = useState(false);
   const { addNotification } = useNotification();
+  const { t } = useTranslation(); // Use translation hook
 
   useEffect(() => {
     if (user) {
@@ -49,14 +51,14 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
       onSave(savedUser);
       addNotification({
         type: 'success',
-        title: user ? 'User Updated' : 'User Created',
-        message: `${formData.fullName} has been ${user ? 'updated' : 'created'} successfully`
+        title: user ? t('user_updated') : t('user_created'),
+        message: t('user_saved_message', { userName: formData.fullName, status: user ? t('updated') : t('created') })
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: 'Save Failed',
-        message: 'Failed to save the user'
+        title: t('save_failed'),
+        message: t('failed_to_save_user')
       });
     } finally {
       setLoading(false);
@@ -68,7 +70,7 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">
-            {user ? 'Edit User' : 'Create New User'}
+            {user ? t('edit_user') : t('create_new_user')}
           </h2>
           <button
             onClick={onClose}
@@ -82,7 +84,7 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Username
+                {t('username')}
               </label>
               <input
                 type="text"
@@ -90,13 +92,13 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
                 value={formData.username}
                 onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter username"
+                placeholder={t('enter_username')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
+                {t('email')}
               </label>
               <input
                 type="email"
@@ -104,13 +106,13 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
                 value={formData.email}
                 onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter email address"
+                placeholder={t('enter_email_address')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
+                {t('full_name')}
               </label>
               <input
                 type="text"
@@ -118,13 +120,13 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
                 value={formData.fullName}
                 onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter full name"
+                placeholder={t('enter_full_name')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Department
+                {t('department')}
               </label>
               <select
                 required
@@ -132,7 +134,7 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
                 onChange={(e) => setFormData(prev => ({ ...prev, department: e.target.value }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="">Select department</option>
+                <option value="">{t('select_department')}</option>
                 {departments.map(dept => (
                   <option key={dept.id} value={dept.code}>{dept.name}</option>
                 ))}
@@ -141,16 +143,16 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Role
+                {t('role')}
               </label>
               <select
                 value={formData.role}
                 onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as 'admin' | 'user' | 'manager' }))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="user">User</option>
-                <option value="manager">Manager</option>
-                <option value="admin">Admin</option>
+                <option value="user">{t('user_role')}</option>
+                <option value="manager">{t('manager_role')}</option>
+                <option value="admin">{t('admin_role')}</option>
               </select>
             </div>
           </div>
@@ -161,14 +163,14 @@ const UserDialog: React.FC<UserDialogProps> = ({ user, departments, onSave, onCl
               onClick={onClose}
               className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               type="submit"
               disabled={loading}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Saving...' : user ? 'Update User' : 'Create User'}
+              {loading ? t('saving') : user ? t('update_user') : t('create_user')}
             </button>
           </div>
         </form>

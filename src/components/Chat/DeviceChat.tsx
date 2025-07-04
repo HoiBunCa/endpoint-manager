@@ -3,6 +3,7 @@ import { Send, MessageCircle } from 'lucide-react';
 import { ChatMessage } from '../../types';
 import { apiService } from '../../services/apiService';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 interface DeviceChatProps {
   deviceId: string;
@@ -13,6 +14,7 @@ const DeviceChat: React.FC<DeviceChatProps> = ({ deviceId }) => {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation(); // Use translation hook
 
   useEffect(() => {
     loadMessages();
@@ -65,7 +67,7 @@ const DeviceChat: React.FC<DeviceChatProps> = ({ deviceId }) => {
         {messages.length === 0 ? (
           <div className="text-center text-gray-500 py-8">
             <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <p>No messages yet. Start a conversation!</p>
+            <p>{t('no_messages_yet_start_conversation')}</p>
           </div>
         ) : (
           messages.map(message => (
@@ -100,7 +102,7 @@ const DeviceChat: React.FC<DeviceChatProps> = ({ deviceId }) => {
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type your message..."
+            placeholder={t('type_your_message')}
             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             onKeyPress={(e) => {
               if (e.key === 'Enter') {

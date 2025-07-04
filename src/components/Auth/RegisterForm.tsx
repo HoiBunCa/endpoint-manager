@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Monitor, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNotification } from '../../contexts/NotificationContext';
+import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 const RegisterForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ const RegisterForm: React.FC = () => {
   const { register } = useAuth();
   const { addNotification } = useNotification();
   const navigate = useNavigate();
+  const { t } = useTranslation(); // Use translation hook
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -33,8 +35,8 @@ const RegisterForm: React.FC = () => {
     if (formData.password !== formData.confirmPassword) {
       addNotification({
         type: 'error',
-        title: 'Password Mismatch',
-        message: 'Passwords do not match. Please try again.'
+        title: t('password_mismatch'),
+        message: t('passwords_do_not_match')
       });
       return;
     }
@@ -47,22 +49,22 @@ const RegisterForm: React.FC = () => {
       if (success) {
         addNotification({
           type: 'success',
-          title: 'Registration Successful',
-          message: 'Your account has been created successfully!'
+          title: t('registration_successful'),
+          message: t('account_created_successfully')
         });
         navigate('/dashboard');
       } else {
         addNotification({
           type: 'error',
-          title: 'Registration Failed',
-          message: 'Failed to create account. Please try again.'
+          title: t('registration_failed'),
+          message: t('failed_to_create_account')
         });
       }
     } catch (error) {
       addNotification({
         type: 'error',
-        title: 'Registration Error',
-        message: 'An unexpected error occurred. Please try again.'
+        title: t('registration_error'),
+        message: t('unexpected_error_occurred')
       });
     } finally {
       setIsLoading(false);
@@ -79,8 +81,8 @@ const RegisterForm: React.FC = () => {
               <Monitor className="w-6 h-6 text-white" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Create account</h2>
-          <p className="text-gray-600">Join Endpoint Manager today</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('create_account')}</h2>
+          <p className="text-gray-600">{t('sign_up')}</p>
         </div>
 
         {/* Form */}
@@ -88,7 +90,7 @@ const RegisterForm: React.FC = () => {
           <div className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                Username
+                {t('username')}
               </label>
               <input
                 id="username"
@@ -98,13 +100,13 @@ const RegisterForm: React.FC = () => {
                 value={formData.username}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter your username"
+                placeholder={t('username_placeholder')}
               />
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                Email address
+                {t('email_label')}
               </label>
               <input
                 id="email"
@@ -114,13 +116,13 @@ const RegisterForm: React.FC = () => {
                 value={formData.email}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter your email"
+                placeholder={t('email_placeholder')}
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
+                {t('password')}
               </label>
               <div className="relative">
                 <input
@@ -131,7 +133,7 @@ const RegisterForm: React.FC = () => {
                   value={formData.password}
                   onChange={handleChange}
                   className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your password"
+                  placeholder={t('password_placeholder')}
                 />
                 <button
                   type="button"
@@ -149,7 +151,7 @@ const RegisterForm: React.FC = () => {
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                Confirm Password
+                {t('confirm_password_placeholder')}
               </label>
               <div className="relative">
                 <input
@@ -160,7 +162,7 @@ const RegisterForm: React.FC = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Confirm your password"
+                  placeholder={t('confirm_password_placeholder')}
                 />
                 <button
                   type="button"
@@ -186,16 +188,16 @@ const RegisterForm: React.FC = () => {
               {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                'Create Account'
+                t('create_account')
               )}
             </button>
           </div>
 
           <div className="text-center">
             <span className="text-sm text-gray-600">
-              Already have an account?{' '}
+              {t('already_have_account')}{' '}
               <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
-                Sign in
+                {t('sign_in_here')}
               </Link>
             </span>
           </div>

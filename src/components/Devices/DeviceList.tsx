@@ -5,6 +5,7 @@ import { apiService } from '../../services/apiService';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { clsx } from 'clsx';
+import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 // Helper function to safely format date distance
 const safeFormatDistanceToNow = (dateString: string | undefined, addSuffix: boolean = true) => {
@@ -22,6 +23,7 @@ const DeviceList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const navigate = useNavigate();
+  const { t } = useTranslation(); // Use translation hook
 
   useEffect(() => {
     loadDevices();
@@ -72,15 +74,15 @@ const DeviceList: React.FC = () => {
 
   const exportDevices = () => {
     const csvContent = [
-      ['ID', 'Hostname', 'Platform', 'User', 'Status', 'Last Seen', 'Department'].join(','),
+      [t('device_id'), t('hostname'), t('platform'), t('user'), t('status'), t('last_seen'), t('department')].join(','),
       ...filteredDevices.map(device => [
         device.id,
         device.hostname,
         device.platform,
-        device.assignedUser?.fullName || 'Unassigned',
-        device.isOnline ? 'Online' : 'Offline',
+        device.assignedUser?.fullName || t('unassigned'),
+        device.isOnline ? t('online') : t('offline'),
         safeFormatDistanceToNow(device.lastSeen, false), // Use safe function, no suffix for CSV
-        device.department || 'N/A'
+        device.department || t('n_a')
       ].join(','))
     ].join('\n');
 
@@ -125,15 +127,15 @@ const DeviceList: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Devices</h1>
-          <p className="text-gray-600">Manage and monitor all your devices</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('devices')}</h1>
+          <p className="text-gray-600">{t('manage_and_monitor_devices')}</p>
         </div>
         <button
           onClick={exportDevices}
           className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Download className="w-4 h-4" />
-          <span>Export</span>
+          <span>{t('export')}</span>
         </button>
       </div>
 
@@ -144,7 +146,7 @@ const DeviceList: React.FC = () => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search devices..."
+              placeholder={t('search_devices')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -157,9 +159,9 @@ const DeviceList: React.FC = () => {
               onChange={(e) => setStatusFilter(e.target.value as 'all' | 'online' | 'offline')}
               className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="all">All Status</option>
-              <option value="online">Online</option>
-              <option value="offline">Offline</option>
+              <option value="all">{t('all_status')}</option>
+              <option value="online">{t('online')}</option>
+              <option value="offline">{t('offline')}</option>
             </select>
           </div>
         </div>
@@ -171,12 +173,12 @@ const DeviceList: React.FC = () => {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Platform</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Seen</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('device')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('platform')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('user')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('status')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('last_seen')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{t('actions')}</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -195,15 +197,14 @@ const DeviceList: React.FC = () => {
                         <div className="text-sm font-medium text-gray-900">{device.hostname}</div>
                         <div className="text-sm text-gray-500">{device.id}</div>
                       </div>
-                    </div>
-                  </td>
+                    </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{device.platform}</div>
-                    <div className="text-sm text-gray-500">{device.department || 'Unassigned'}</div>
+                    <div className="text-sm text-gray-500">{device.department || t('unassigned')}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      {device.assignedUser?.fullName || 'Unassigned'}
+                      {device.assignedUser?.fullName || t('unassigned')}
                     </div>
                     <div className="text-sm text-gray-500">
                       {device.assignedUser?.email || ''}
@@ -219,7 +220,7 @@ const DeviceList: React.FC = () => {
                         'text-sm font-medium',
                         device.isOnline ? 'text-green-700' : 'text-red-700'
                       )}>
-                        {device.isOnline ? 'Online' : 'Offline'}
+                        {device.isOnline ? t('online') : t('offline')}
                       </span>
                     </div>
                   </td>
@@ -247,7 +248,7 @@ const DeviceList: React.FC = () => {
         {totalPages > 1 && (
           <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
             <div className="text-sm text-gray-700">
-              Showing {startIndex + 1} to {Math.min(endIndex, filteredDevices.length)} of {filteredDevices.length} devices
+              {t('showing_x_to_y_of_z_devices', { start: startIndex + 1, end: Math.min(endIndex, filteredDevices.length), total: filteredDevices.length })}
             </div>
             <div className="flex space-x-2">
               <button
@@ -255,14 +256,14 @@ const DeviceList: React.FC = () => {
                 disabled={currentPage === 1}
                 className="px-3 py-1 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
               >
-                Previous
+                {t('previous')}
               </button>
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
                 className="px-3 py-1 border border-gray-300 rounded text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
               >
-                Next
+                {t('next')}
               </button>
             </div>
           </div>
@@ -273,8 +274,8 @@ const DeviceList: React.FC = () => {
       {filteredDevices.length === 0 && !loading && (
         <div className="text-center py-12">
           <Monitor className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No devices found</h3>
-          <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">{t('no_devices_found')}</h3>
+          <p className="text-gray-500">{t('try_adjusting_filters')}</p>
         </div>
       )}
     </div>

@@ -4,6 +4,7 @@ import { Icon } from 'leaflet';
 import { Device } from '../../types';
 import { apiService } from '../../services/apiService';
 import 'leaflet/dist/leaflet.css';
+import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 // Fix for default markers
 delete (Icon.Default.prototype as any)._getIconUrl;
@@ -15,6 +16,7 @@ Icon.Default.mergeOptions({
 
 const DevicesMap: React.FC = () => {
   const [devices, setDevices] = useState<Device[]>([]);
+  const { t } = useTranslation(); // Use translation hook
   
   useEffect(() => {
     loadDevices();
@@ -50,7 +52,7 @@ const DevicesMap: React.FC = () => {
   if (devices.length === 0) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
-        <p className="text-gray-500">No device locations available</p>
+        <p className="text-gray-500">{t('no_device_locations_available')}</p>
       </div>
     );
   }
@@ -95,10 +97,10 @@ const DevicesMap: React.FC = () => {
                 <h3 className="font-medium">{device.hostname}</h3>
                 <p className="text-sm text-gray-600">{device.platform}</p>
                 <p className="text-sm text-gray-600">
-                  User: {device.assignedUser?.fullName || 'Unassigned'}
+                  {t('user')}: {device.assignedUser?.fullName || t('unassigned')}
                 </p>
                 <p className={`text-sm font-medium ${device.isOnline ? 'text-green-600' : 'text-red-600'}`}>
-                  {device.isOnline ? 'Online' : 'Offline'}
+                  {device.isOnline ? t('online') : t('offline')}
                 </p>
                 {device.location.address && (
                   <p className="text-xs text-gray-500 mt-1">{device.location.address}</p>
