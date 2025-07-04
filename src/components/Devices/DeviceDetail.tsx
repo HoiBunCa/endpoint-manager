@@ -153,6 +153,21 @@ const DeviceDetail: React.FC = () => {
     try {
       if (action === 'remote_control') {
         setShowRemoteControl(true);
+      } else if (action === 'reboot') { // Handle Reboot action
+        if (!device.systemUuid) {
+          addNotification({
+            type: 'error',
+            title: 'Action Failed',
+            message: 'Device System UUID not available for reboot.'
+          });
+          return;
+        }
+        await apiService.rebootDevice(device.systemUuid);
+        addNotification({
+          type: 'success',
+          title: 'Action Executed',
+          message: `Reboot command sent to ${device.hostname}`
+        });
       } else if (action === 'toggle_speaker') {
         if (!device.systemUuid) {
           addNotification({

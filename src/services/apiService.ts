@@ -854,6 +854,26 @@ class ApiService {
     }
   }
 
+  // API call for Reboot
+  async rebootDevice(systemUuid: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/restart/${systemUuid}/`, {
+        method: 'POST',
+        headers: this._getAuthHeaders(),
+        body: JSON.stringify({}) // API expects an empty body
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`Failed to reboot device ${systemUuid}:`, errorData);
+        throw new Error(`Failed to reboot device ${systemUuid}`);
+      }
+      return true;
+    } catch (error) {
+      console.error('Error in rebootDevice:', error);
+      throw error;
+    }
+  }
+
   // Remote Control
   async startRemoteControl(deviceId: string): Promise<boolean> {
     await this.delay(1000);
