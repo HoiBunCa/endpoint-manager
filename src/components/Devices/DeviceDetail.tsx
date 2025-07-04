@@ -153,7 +153,7 @@ const DeviceDetail: React.FC = () => {
     try {
       if (action === 'remote_control') {
         setShowRemoteControl(true);
-      } else if (action === 'reboot') { // Handle Reboot action
+      } else if (action === 'reboot') {
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
@@ -167,6 +167,51 @@ const DeviceDetail: React.FC = () => {
           type: 'success',
           title: 'Action Executed',
           message: `Reboot command sent to ${device.hostname}`
+        });
+      } else if (action === 'sleep') { // Handle Sleep action
+        if (!device.systemUuid) {
+          addNotification({
+            type: 'error',
+            title: 'Action Failed',
+            message: 'Device System UUID not available for sleep.'
+          });
+          return;
+        }
+        await apiService.sleepComputer(device.systemUuid);
+        addNotification({
+          type: 'success',
+          title: 'Action Executed',
+          message: `Sleep command sent to ${device.hostname}`
+        });
+      } else if (action === 'power_off') { // Handle Power Off action
+        if (!device.systemUuid) {
+          addNotification({
+            type: 'error',
+            title: 'Action Failed',
+            message: 'Device System UUID not available for power off.'
+          });
+          return;
+        }
+        await apiService.powerOffComputer(device.systemUuid);
+        addNotification({
+          type: 'success',
+          title: 'Action Executed',
+          message: `Power Off command sent to ${device.hostname}`
+        });
+      } else if (action === 'clear_running_apps') { // Handle Clear App Running action
+        if (!device.systemUuid) {
+          addNotification({
+            type: 'error',
+            title: 'Action Failed',
+            message: 'Device System UUID not available for clearing apps.'
+          });
+          return;
+        }
+        await apiService.clearDesktopApps(device.systemUuid);
+        addNotification({
+          type: 'success',
+          title: 'Action Executed',
+          message: `Clear App Running command sent to ${device.hostname}`
         });
       } else if (action === 'toggle_speaker') {
         if (!device.systemUuid) {

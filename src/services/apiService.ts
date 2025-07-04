@@ -874,6 +874,66 @@ class ApiService {
     }
   }
 
+  // API call for Sleep
+  async sleepComputer(systemUuid: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/computer-sleep/${systemUuid}/`, {
+        method: 'POST',
+        headers: this._getAuthHeaders(),
+        body: JSON.stringify({})
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`Failed to put device ${systemUuid} to sleep:`, errorData);
+        throw new Error(`Failed to put device ${systemUuid} to sleep`);
+      }
+      return true;
+    } catch (error) {
+      console.error('Error in sleepComputer:', error);
+      throw error;
+    }
+  }
+
+  // API call for Power Off
+  async powerOffComputer(systemUuid: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/power-off/${systemUuid}/`, {
+        method: 'POST',
+        headers: this._getAuthHeaders(),
+        body: JSON.stringify({})
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`Failed to power off device ${systemUuid}:`, errorData);
+        throw new Error(`Failed to power off device ${systemUuid}`);
+      }
+      return true;
+    } catch (error) {
+      console.error('Error in powerOffComputer:', error);
+      throw error;
+    }
+  }
+
+  // API call for Clear App Running
+  async clearDesktopApps(systemUuid: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_BASE_URL}/clear-desktop/${systemUuid}/`, {
+        method: 'POST',
+        headers: this._getAuthHeaders(),
+        body: JSON.stringify({})
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error(`Failed to clear desktop apps on device ${systemUuid}:`, errorData);
+        throw new Error(`Failed to clear desktop apps on device ${systemUuid}`);
+      }
+      return true;
+    } catch (error) {
+      console.error('Error in clearDesktopApps:', error);
+      throw error;
+    }
+  }
+
   // Remote Control
   async startRemoteControl(deviceId: string): Promise<boolean> {
     await this.delay(1000);
