@@ -3,7 +3,6 @@ import { X, Monitor, Search, UserPlus } from 'lucide-react';
 import { User, Device } from '../../types';
 import { apiService } from '../../services/apiService';
 import { useNotification } from '../../contexts/NotificationContext';
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 interface AssignDeviceDialogProps {
   user: User;
@@ -18,7 +17,6 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const { addNotification } = useNotification();
-  const { t } = useTranslation(); // Use translation hook
 
   useEffect(() => {
     const assigned = devices.filter(device => device.assignedUser?.id === user.id);
@@ -44,14 +42,14 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
       
       addNotification({
         type: 'success',
-        title: t('device_assigned'),
-        message: t('device_assigned_to_user', { hostname: device.hostname, userName: user.fullName })
+        title: 'Device Assigned',
+        message: `${device.hostname} has been assigned to ${user.fullName}`
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('assignment_failed'),
-        message: t('failed_to_assign_device')
+        title: 'Assignment Failed',
+        message: 'Failed to assign device'
       });
     } finally {
       setLoading(false);
@@ -74,14 +72,14 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
       
       addNotification({
         type: 'success',
-        title: t('device_unassigned'),
-        message: t('device_unassigned_from_user', { hostname: device.hostname, userName: user.fullName })
+        title: 'Device Unassigned',
+        message: `${device.hostname} has been unassigned from ${user.fullName}`
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('unassignment_failed'),
-        message: t('failed_to_unassign_device')
+        title: 'Unassignment Failed',
+        message: 'Failed to unassign device'
       });
     } finally {
       setLoading(false);
@@ -97,8 +95,8 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
       <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[80vh] overflow-hidden">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <div>
-            <h2 className="text-xl font-semibold text-gray-900">{t('manage_device_assignments')}</h2>
-            <p className="text-sm text-gray-600">{t('assign_devices_to_user', { userName: user.fullName })}</p>
+            <h2 className="text-xl font-semibold text-gray-900">Manage Device Assignments</h2>
+            <p className="text-sm text-gray-600">Assign devices to {user.fullName}</p>
           </div>
           <button
             onClick={onClose}
@@ -113,15 +111,15 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
             {/* Available Devices */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900">{t('available_devices')}</h3>
-                <span className="text-sm text-gray-500">{t('x_devices', { count: filteredAvailableDevices.length })}</span>
+                <h3 className="text-lg font-medium text-gray-900">Available Devices</h3>
+                <span className="text-sm text-gray-500">{filteredAvailableDevices.length} devices</span>
               </div>
               
               <div className="relative mb-4">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder={t('search_devices')}
+                  placeholder="Search devices..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -130,7 +128,7 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
 
               <div className="max-h-64 overflow-y-auto border border-gray-200 rounded-lg">
                 {filteredAvailableDevices.length === 0 ? (
-                  <div className="p-4 text-center text-gray-500">{t('no_available_devices')}</div>
+                  <div className="p-4 text-center text-gray-500">No available devices</div>
                 ) : (
                   <div className="divide-y divide-gray-200">
                     {filteredAvailableDevices.map(device => (
@@ -151,7 +149,7 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
                             className="flex items-center space-x-1 px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 text-sm"
                           >
                             <UserPlus className="w-3 h-3" />
-                            <span>{t('assign')}</span>
+                            <span>Assign</span>
                           </button>
                         </div>
                       </div>
@@ -164,13 +162,13 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
             {/* Assigned Devices */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-medium text-gray-900">{t('assigned_devices')}</h3>
-                <span className="text-sm text-gray-500">{t('x_devices', { count: assignedDevices.length })}</span>
+                <h3 className="text-lg font-medium text-gray-900">Assigned Devices</h3>
+                <span className="text-sm text-gray-500">{assignedDevices.length} devices</span>
               </div>
 
               <div className="max-h-80 overflow-y-auto border border-gray-200 rounded-lg">
                 {assignedDevices.length === 0 ? (
-                  <div className="p-4 text-center text-gray-500">{t('no_assigned_devices')}</div>
+                  <div className="p-4 text-center text-gray-500">No assigned devices</div>
                 ) : (
                   <div className="divide-y divide-gray-200">
                     {assignedDevices.map(device => (
@@ -184,7 +182,7 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
                               <div className="font-medium text-gray-900">{device.hostname}</div>
                               <div className="text-sm text-gray-600">{device.platform}</div>
                               <div className={`text-xs ${device.isOnline ? 'text-green-600' : 'text-red-600'}`}>
-                                {device.isOnline ? t('online') : t('offline')}
+                                {device.isOnline ? 'Online' : 'Offline'}
                               </div>
                             </div>
                           </div>
@@ -193,7 +191,7 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
                             disabled={loading}
                             className="px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 disabled:opacity-50 text-sm"
                           >
-                            {t('unassign')}
+                            Unassign
                           </button>
                         </div>
                       </div>
@@ -213,7 +211,7 @@ const AssignDeviceDialog: React.FC<AssignDeviceDialogProps> = ({ user, devices, 
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
-            {t('done')}
+            Done
           </button>
         </div>
       </div>

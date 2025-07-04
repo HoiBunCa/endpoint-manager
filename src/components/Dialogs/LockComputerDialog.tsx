@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { X, Lock } from 'lucide-react';
 import { clsx } from 'clsx';
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 interface LockComputerDialogProps {
   onLock: (timeout: number) => void;
@@ -12,13 +11,12 @@ const LockComputerDialog: React.FC<LockComputerDialogProps> = ({ onLock, onClose
   const [selectedTimeout, setSelectedTimeout] = useState<number | 'custom'>(3600000); // Default to 1 hour (in ms)
   const [customTimeout, setCustomTimeout] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { t } = useTranslation(); // Use translation hook
 
   const timeoutOptions = [
-    { label: t('1_hour'), value: 3600000 },
-    { label: t('4_hours'), value: 14400000 },
-    { label: t('8_hours'), value: 28800000 },
-    { label: t('24_hours'), value: 86400000 },
+    { label: '1 Hour', value: 3600000 },
+    { label: '4 Hours', value: 14400000 },
+    { label: '8 Hours', value: 28800000 },
+    { label: '24 Hours', value: 86400000 },
   ];
 
   const handleLock = async () => {
@@ -28,7 +26,7 @@ const LockComputerDialog: React.FC<LockComputerDialogProps> = ({ onLock, onClose
     if (selectedTimeout === 'custom') {
       const customMs = parseInt(customTimeout) * 60 * 1000; // Convert minutes to milliseconds
       if (isNaN(customMs) || customMs <= 0) {
-        alert(t('please_enter_valid_custom_timeout'));
+        alert('Please enter a valid custom timeout in minutes.');
         setIsSubmitting(false);
         return;
       }
@@ -46,7 +44,7 @@ const LockComputerDialog: React.FC<LockComputerDialogProps> = ({ onLock, onClose
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">{t('lock_computer_dialog_title')}</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Lock Computer</h2>
           <button
             onClick={onClose}
             className="p-2 rounded-lg hover:bg-gray-100"
@@ -58,7 +56,7 @@ const LockComputerDialog: React.FC<LockComputerDialogProps> = ({ onLock, onClose
         <div className="p-6 space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              {t('select_lock_duration')}
+              Select Lock Duration
             </label>
             <div className="grid grid-cols-2 gap-3">
               {timeoutOptions.map(option => (
@@ -86,7 +84,7 @@ const LockComputerDialog: React.FC<LockComputerDialogProps> = ({ onLock, onClose
                     : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                 )}
               >
-                {t('custom')}
+                Custom
               </button>
             </div>
           </div>
@@ -94,7 +92,7 @@ const LockComputerDialog: React.FC<LockComputerDialogProps> = ({ onLock, onClose
           {selectedTimeout === 'custom' && (
             <div>
               <label htmlFor="custom-timeout" className="block text-sm font-medium text-gray-700 mb-1">
-                {t('custom_duration_minutes')}
+                Custom Duration (minutes)
               </label>
               <input
                 id="custom-timeout"
@@ -115,7 +113,7 @@ const LockComputerDialog: React.FC<LockComputerDialogProps> = ({ onLock, onClose
             className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
             disabled={isSubmitting}
           >
-            {t('cancel')}
+            Cancel
           </button>
           <button
             type="button"
@@ -123,7 +121,7 @@ const LockComputerDialog: React.FC<LockComputerDialogProps> = ({ onLock, onClose
             disabled={isSubmitting || (selectedTimeout === 'custom' && (!customTimeout || parseInt(customTimeout) <= 0))}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? t('locking') : t('lock_computer')}
+            {isSubmitting ? 'Locking...' : 'Lock Computer'}
           </button>
         </div>
       </div>

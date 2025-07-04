@@ -5,7 +5,6 @@ import { Device } from '../../types';
 import { MapPin, Navigation, History } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import 'leaflet/dist/leaflet.css';
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 // Fix for default markers
 delete (Icon.Default.prototype as any)._getIconUrl;
@@ -29,7 +28,6 @@ interface DeviceMapProps {
 const DeviceMap: React.FC<DeviceMapProps> = ({ device }) => {
   const [showHistory, setShowHistory] = useState(false);
   const [mapRef, setMapRef] = useState<any>(null);
-  const { t } = useTranslation(); // Use translation hook
 
   const currentLocationIcon = new Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
@@ -60,7 +58,7 @@ const DeviceMap: React.FC<DeviceMapProps> = ({ device }) => {
       <div className="w-full h-full flex items-center justify-center bg-gray-100 rounded-lg">
         <div className="text-center">
           <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500">{t('no_location_data_available')}</p>
+          <p className="text-gray-500">No location data available</p>
         </div>
       </div>
     );
@@ -78,10 +76,10 @@ const DeviceMap: React.FC<DeviceMapProps> = ({ device }) => {
         <button
           onClick={centerToCurrentLocation}
           className="flex items-center space-x-2 px-3 py-2 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
-          title={t('center_to_current_location')}
+          title="Center to current location"
         >
           <Navigation className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-medium">{t('center')}</span>
+          <span className="text-sm font-medium">Center</span>
         </button>
         
         <button
@@ -91,10 +89,10 @@ const DeviceMap: React.FC<DeviceMapProps> = ({ device }) => {
               ? 'bg-blue-600 text-white' 
               : 'bg-white text-gray-700'
           }`}
-          title={t('toggle_location_history')}
+          title="Toggle location history"
         >
           <History className="w-4 h-4" />
-          <span className="text-sm font-medium">{t('history')}</span>
+          <span className="text-sm font-medium">History</span>
         </button>
       </div>
 
@@ -118,12 +116,12 @@ const DeviceMap: React.FC<DeviceMapProps> = ({ device }) => {
           <Popup>
             <div className="p-2">
               <h3 className="font-medium">{device.hostname}</h3>
-              <p className="text-sm text-gray-600">{t('current_location')}</p>
+              <p className="text-sm text-gray-600">Current Location</p>
               {device.location.address && (
                 <p className="text-sm text-gray-600">{device.location.address}</p>
               )}
               <p className="text-xs text-gray-500 mt-1">
-                {t('last_seen')}: {safeFormatDistanceToNow(device.lastSeen)}
+                Last seen: {safeFormatDistanceToNow(device.lastSeen)}
               </p>
             </div>
           </Popup>
@@ -141,7 +139,7 @@ const DeviceMap: React.FC<DeviceMapProps> = ({ device }) => {
               >
                 <Popup>
                   <div className="p-2">
-                    <h3 className="font-medium">{t('historical_location')}</h3>
+                    <h3 className="font-medium">Historical Location</h3>
                     <p className="text-sm text-gray-600">
                       {safeFormatDistanceToNow(location.timestamp)}
                     </p>
@@ -171,13 +169,13 @@ const DeviceMap: React.FC<DeviceMapProps> = ({ device }) => {
       <div className="absolute bottom-4 left-4 bg-white p-3 rounded-lg shadow-md">
         <div className="flex items-center space-x-2 mb-2">
           <MapPin className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-medium">{t('current_location')}</span>
+          <span className="text-sm font-medium">Current Location</span>
         </div>
         <p className="text-sm text-gray-600">
           {device.location.address || `${device.location.latitude.toFixed(6)}, ${device.location.longitude.toFixed(6)}`}
         </p>
         <p className="text-xs text-gray-500">
-          {t('last_updated')}: {safeFormatDistanceToNow(device.lastSeen)}
+          Updated: {safeFormatDistanceToNow(device.lastSeen)}
         </p>
       </div>
     </div>

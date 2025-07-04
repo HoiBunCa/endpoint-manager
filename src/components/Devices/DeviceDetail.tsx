@@ -47,7 +47,6 @@ import RemoteControl from '../RemoteControl/RemoteControl';
 import CustomRemoteControlButton from '../RemoteControl/CustomRemoteControlButton'; // Import the new component
 import DeviceChat from '../Chat/DeviceChat';
 import LockComputerDialog from '../Dialogs/LockComputerDialog'; // Import the new dialog
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 // Helper function to safely format date distance
 const safeFormatDistanceToNow = (dateString: string | undefined, addSuffix: boolean = true) => {
@@ -84,7 +83,6 @@ const DeviceDetail: React.FC = () => {
   const [isUacLocked, setIsUacLocked] = useState(false); // New state for UAC lock
   const [isComputerLocked, setIsComputerLocked] = useState(false); // New state for Computer lock
   const [showLockComputerDialog, setShowLockComputerDialog] = useState(false); // New state for lock computer dialog
-  const { t } = useTranslation(); // Use translation hook
 
   useEffect(() => {
     if (id) {
@@ -113,8 +111,8 @@ const DeviceDetail: React.FC = () => {
       console.error('Failed to load device:', error);
       addNotification({
         type: 'error',
-        title: t('action_failed'),
-        message: t('failed_to_load_device_details')
+        title: 'Error',
+        message: 'Failed to load device details'
       });
     } finally {
       setLoading(false);
@@ -125,8 +123,8 @@ const DeviceDetail: React.FC = () => {
     if (!device?.systemUuid) {
       addNotification({
         type: 'error',
-        title: t('action_failed'),
-        message: t('device_system_uuid_not_available', { action: t('lock_computer') })
+        title: 'Action Failed',
+        message: 'Device System UUID not available for computer lock.'
       });
       return;
     }
@@ -135,14 +133,14 @@ const DeviceDetail: React.FC = () => {
       setIsComputerLocked(true);
       addNotification({
         type: 'success',
-        title: t('action_executed'),
-        message: t('computer_locked_for_x_hours', { hostname: device.hostname, hours: timeout / 3600000 })
+        title: 'Action Executed',
+        message: `Computer locked on ${device.hostname} for ${timeout / 3600000} hours`
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('action_failed'),
-        message: t('failed_to_execute_action', { action: t('lock_computer'), hostname: device.hostname })
+        title: 'Action Failed',
+        message: `Failed to lock computer on ${device.hostname}`
       });
     } finally {
       setShowLockComputerDialog(false);
@@ -159,68 +157,68 @@ const DeviceDetail: React.FC = () => {
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('reboot') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for reboot.'
           });
           return;
         }
         await apiService.rebootDevice(device.systemUuid);
         addNotification({
           type: 'success',
-          title: t('action_executed'),
-          message: t('reboot_command_sent', { hostname: device.hostname })
+          title: 'Action Executed',
+          message: `Reboot command sent to ${device.hostname}`
         });
       } else if (action === 'sleep') { // Handle Sleep action
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('sleep') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for sleep.'
           });
           return;
         }
         await apiService.sleepComputer(device.systemUuid);
         addNotification({
           type: 'success',
-          title: t('action_executed'),
-          message: t('sleep_command_sent', { hostname: device.hostname })
+          title: 'Action Executed',
+          message: `Sleep command sent to ${device.hostname}`
         });
       } else if (action === 'power_off') { // Handle Power Off action
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('power_off') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for power off.'
           });
           return;
         }
         await apiService.powerOffComputer(device.systemUuid);
         addNotification({
           type: 'success',
-          title: t('action_executed'),
-          message: t('power_off_command_sent', { hostname: device.hostname })
+          title: 'Action Executed',
+          message: `Power Off command sent to ${device.hostname}`
         });
       } else if (action === 'clear_running_apps') { // Handle Clear App Running action
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('clear_app_running') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for clearing apps.'
           });
           return;
         }
         await apiService.clearDesktopApps(device.systemUuid);
         addNotification({
           type: 'success',
-          title: t('action_executed'),
-          message: t('clear_app_running_command_sent', { hostname: device.hostname })
+          title: 'Action Executed',
+          message: `Clear App Running command sent to ${device.hostname}`
         });
       } else if (action === 'toggle_speaker') {
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('speaker_control') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for speaker control.'
           });
           return;
         }
@@ -230,24 +228,24 @@ const DeviceDetail: React.FC = () => {
           setIsSpeakerLocked(false);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('speaker_unlocked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Speaker unlocked on ${device.hostname}`
           });
         } else {
           await apiService.lockSpeaker(device.systemUuid);
           setIsSpeakerLocked(true);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('speaker_locked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Speaker locked on ${device.hostname}`
           });
         }
       } else if (action === 'toggle_task_manager') {
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('task_manager') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for Task Manager control.'
           });
           return;
         }
@@ -257,24 +255,24 @@ const DeviceDetail: React.FC = () => {
           setIsTaskManagerLocked(false);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('task_manager_enabled_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Task Manager enabled on ${device.hostname}`
           });
         } else {
           await apiService.disableTaskManager(device.systemUuid);
           setIsTaskManagerLocked(true);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('task_manager_disabled_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Task Manager disabled on ${device.hostname}`
           });
         }
       } else if (action === 'toggle_usb') {
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('usb_control') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for USB control.'
           });
           return;
         }
@@ -284,24 +282,24 @@ const DeviceDetail: React.FC = () => {
           setIsUsbLocked(false);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('usb_unlocked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `USB unlocked on ${device.hostname}`
           });
         } else {
           await apiService.lockUsb(device.systemUuid);
           setIsUsbLocked(true);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('usb_locked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `USB locked on ${device.hostname}`
           });
         }
       } else if (action === 'toggle_printer') {
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('print_control') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for printer control.'
           });
           return;
         }
@@ -311,24 +309,24 @@ const DeviceDetail: React.FC = () => {
           setIsPrinterLocked(false);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('printer_unlocked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Printer unlocked on ${device.hostname}`
           });
         } else {
           await apiService.lockPrinting(device.systemUuid);
           setIsPrinterLocked(true);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('printer_locked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Printer locked on ${device.hostname}`
           });
         }
       } else if (action === 'toggle_security') {
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('security_control') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for security control.'
           });
           return;
         }
@@ -338,24 +336,24 @@ const DeviceDetail: React.FC = () => {
           setIsSecurityLocked(false);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('security_unlocked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Security unlocked on ${device.hostname}`
           });
         } else {
           await apiService.lockSecurity(device.systemUuid);
           setIsSecurityLocked(true);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('security_locked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Security locked on ${device.hostname}`
           });
         }
       } else if (action === 'toggle_dvd') {
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('dvd_control') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for DVD control.'
           });
           return;
         }
@@ -365,24 +363,24 @@ const DeviceDetail: React.FC = () => {
           setIsDvdLocked(false);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('dvd_unlocked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `DVD unlocked on ${device.hostname}`
           });
         } else {
           await apiService.lockDvd(device.systemUuid);
           setIsDvdLocked(true);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('dvd_locked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `DVD locked on ${device.hostname}`
           });
         }
       } else if (action === 'toggle_ctrl_alt_del') {
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('ctrl_alt_del_control') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for Ctrl+Alt+Del control.'
           });
           return;
         }
@@ -392,24 +390,24 @@ const DeviceDetail: React.FC = () => {
           setIsCtrlAltDelLocked(false);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('ctrl_alt_del_unlocked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Ctrl+Alt+Del unlocked on ${device.hostname}`
           });
         } else {
           await apiService.lockCtrlAltDel(device.systemUuid);
           setIsCtrlAltDelLocked(true);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('ctrl_alt_del_locked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Ctrl+Alt+Del locked on ${device.hostname}`
           });
         }
       } else if (action === 'toggle_uac') { // Handle UAC toggle
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('uac_control') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for UAC control.'
           });
           return;
         }
@@ -419,24 +417,24 @@ const DeviceDetail: React.FC = () => {
           setIsUacLocked(false);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('uac_unlocked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `UAC unlocked on ${device.hostname}`
           });
         } else {
           await apiService.lockUac(device.systemUuid);
           setIsUacLocked(true);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('uac_locked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `UAC locked on ${device.hostname}`
           });
         }
       } else if (action === 'toggle_computer_lock') { // Handle Computer Lock/Unlock
         if (!device.systemUuid) {
           addNotification({
             type: 'error',
-            title: t('action_failed'),
-            message: t('device_system_uuid_not_available', { action: t('lock_computer') })
+            title: 'Action Failed',
+            message: 'Device System UUID not available for computer lock/unlock.'
           });
           return;
         }
@@ -446,8 +444,8 @@ const DeviceDetail: React.FC = () => {
           setIsComputerLocked(false);
           addNotification({
             type: 'success',
-            title: t('action_executed'),
-            message: t('computer_unlocked_on_device', { hostname: device.hostname })
+            title: 'Action Executed',
+            message: `Computer unlocked on ${device.hostname}`
           });
         } else {
           setShowLockComputerDialog(true); // Show dialog to select timeout
@@ -459,15 +457,15 @@ const DeviceDetail: React.FC = () => {
         await apiService.executeDeviceAction(device.id, action, params);
         addNotification({
           type: 'success',
-          title: t('action_executed'),
-          message: t('command_sent_to_device', { action: action.replace(/_/g, ' '), hostname: device.hostname })
+          title: 'Action Executed',
+          message: `${action.replace(/_/g, ' ')} command sent to ${device.hostname}`
         });
       }
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('action_failed'),
-        message: t('failed_to_execute_action', { action: action.replace(/_/g, ' '), hostname: device.hostname })
+        title: 'Action Failed',
+        message: `Failed to execute ${action.replace(/_/g, ' ')} on ${device.hostname}`
       });
     }
   };
@@ -488,14 +486,14 @@ const DeviceDetail: React.FC = () => {
       await apiService.updateDevice(updatedDevice);
       addNotification({
         type: 'success',
-        title: t('software_updated'),
-        message: t('software_status_updated', { softwareName: softwareName, status: !isBlocked ? t('blocked') : t('unblocked') })
+        title: 'Software Updated',
+        message: `${softwareName} has been ${!isBlocked ? 'blocked' : 'unblocked'}`
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('update_failed'),
-        message: t('failed_to_update_software_status', { softwareName: softwareName })
+        title: 'Update Failed',
+        message: `Failed to update ${softwareName} status`
       });
     }
   };
@@ -514,14 +512,14 @@ const DeviceDetail: React.FC = () => {
       await apiService.updateDevice(updatedDevice);
       addNotification({
         type: 'success',
-        title: t('website_blocked'),
-        message: t('website_blocked_message', { website: newWebsite })
+        title: 'Website Blocked',
+        message: `${newWebsite} has been added to the blocked list`
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('block_failed'),
-        message: t('failed_to_block_website', { website: newWebsite })
+        title: 'Block Failed',
+        message: `Failed to block ${newWebsite}`
       });
     }
   };
@@ -539,14 +537,14 @@ const DeviceDetail: React.FC = () => {
       await apiService.updateDevice(updatedDevice);
       addNotification({
         type: 'success',
-        title: t('website_unblocked'),
-        message: t('website_unblocked_message', { website: website })
+        title: 'Website Unblocked',
+        message: `${website} has been removed from the blocked list`
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('unblock_failed'),
-        message: t('failed_to_unblock_website', { website: website })
+        title: 'Unblock Failed',
+        message: `Failed to unblock ${website}`
       });
     }
   };
@@ -555,14 +553,14 @@ const DeviceDetail: React.FC = () => {
     if (!device?.software) return;
 
     const csvContent = [
-      [t('name'), t('version'), t('publisher'), t('install_date'), t('size'), t('blocked')].join(','),
+      ['Name', 'Version', 'Publisher', 'Install Date', 'Size', 'Blocked'].join(','),
       ...device.software.map(sw => [
         sw.name,
         sw.version,
         sw.publisher,
         safeToLocaleDateString(sw.installDate), // Use safe function
         sw.size,
-        sw.isBlocked ? t('yes') : t('no')
+        sw.isBlocked ? 'Yes' : 'No'
       ].join(','))
     ].join('\n');
 
@@ -594,13 +592,13 @@ const DeviceDetail: React.FC = () => {
     return (
       <div className="text-center py-12">
         <Monitor className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">{t('device_not_found')}</h3>
-        <p className="text-gray-500 mb-4">{t('device_not_found_message')}</p>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">Device not found</h3>
+        <p className="text-gray-500 mb-4">The device you're looking for doesn't exist or has been removed.</p>
         <button
           onClick={() => navigate('/devices')}
           className="text-blue-600 hover:text-blue-700 font-medium"
         >
-          {t('back_to_devices')}
+          Back to Devices
         </button>
       </div>
     );
@@ -616,20 +614,20 @@ const DeviceDetail: React.FC = () => {
   ) || [];
 
   const controlActions = [
-    { name: t('reboot'), action: 'reboot', imageSrc: '/assets/images/icon-images/reboot.png', color: 'bg-gray-100' },
-    { name: t('sleep'), action: 'sleep', imageSrc: '/assets/images/icon-images/sleep.png', color: 'bg-gray-100' },
-    { name: t('task_manager'), action: 'toggle_task_manager', imageSrc: '/assets/images/icon-images/task_manager.png', color: 'bg-gray-100', isLocked: isTaskManagerLocked },
-    { name: t('speaker_control'), action: 'toggle_speaker', imageSrc: '/assets/images/icon-images/speaker.png', color: 'bg-gray-100', isLocked: isSpeakerLocked },
-    { name: t('power_off'), action: 'power_off', imageSrc: '/assets/images/icon-images/power_off.png', color: 'bg-gray-100' },
-    { name: t('clear_app_running'), action: 'clear_running_apps', imageSrc: '/assets/images/icon-images/clear_running_apps.png', color: 'bg-gray-100' },
-    { name: isComputerLocked ? t('unlock_computer') : t('lock_computer'), action: 'toggle_computer_lock', imageSrc: '/assets/images/icon-images/computer.png', color: 'bg-gray-100', isLocked: isComputerLocked }, // Combined Lock/Unlock Computer
-    { name: t('usb_control'), action: 'toggle_usb', imageSrc: '/assets/images/icon-images/usb.png', color: 'bg-gray-100', isLocked: isUsbLocked },
-    { name: t('print_control'), action: 'toggle_printer', imageSrc: '/assets/images/icon-images/print.png', color: 'bg-gray-100', isLocked: isPrinterLocked },
-    { name: t('security_control'), action: 'toggle_security', imageSrc: '/assets/images/icon-images/security.png', color: 'bg-gray-100', isLocked: isSecurityLocked },
-    { name: t('dvd_control'), action: 'toggle_dvd', imageSrc: '/assets/images/icon-images/dvd.png', color: 'bg-gray-100', isLocked: isDvdLocked },
-    { name: t('ctrl_alt_del_control'), action: 'toggle_ctrl_alt_del', imageSrc: '/assets/images/icon-images/ctrl_alt_del.png', color: 'bg-gray-100', isLocked: isCtrlAltDelLocked },
-    { name: t('uac_control'), action: 'toggle_uac', imageSrc: '/assets/images/icon-images/uac.png', color: 'bg-gray-100', isLocked: isUacLocked }, // Combined UAC control
-    { name: t('remote_control'), action: 'remote_control', imageSrc: '/assets/images/icon-images/remote_control.png', color: 'bg-gray-100' },
+    { name: 'Reboot', action: 'reboot', imageSrc: '/assets/images/icon-images/reboot.png', color: 'bg-gray-100' },
+    { name: 'Sleep', action: 'sleep', imageSrc: '/assets/images/icon-images/sleep.png', color: 'bg-gray-100' },
+    { name: 'Task Manager', action: 'toggle_task_manager', imageSrc: '/assets/images/icon-images/task_manager.png', color: 'bg-gray-100', isLocked: isTaskManagerLocked },
+    { name: 'Speaker Control', action: 'toggle_speaker', imageSrc: '/assets/images/icon-images/speaker.png', color: 'bg-gray-100', isLocked: isSpeakerLocked },
+    { name: 'Power Off', action: 'power_off', imageSrc: '/assets/images/icon-images/power_off.png', color: 'bg-gray-100' },
+    { name: 'Clear App Running', action: 'clear_running_apps', imageSrc: '/assets/images/icon-images/clear_running_apps.png', color: 'bg-gray-100' },
+    { name: isComputerLocked ? 'Unlock Computer' : 'Lock Computer', action: 'toggle_computer_lock', imageSrc: '/assets/images/icon-images/computer.png', color: 'bg-gray-100', isLocked: isComputerLocked }, // Combined Lock/Unlock Computer
+    { name: 'USB Control', action: 'toggle_usb', imageSrc: '/assets/images/icon-images/usb.png', color: 'bg-gray-100', isLocked: isUsbLocked },
+    { name: 'Print Control', action: 'toggle_printer', imageSrc: '/assets/images/icon-images/print.png', color: 'bg-gray-100', isLocked: isPrinterLocked },
+    { name: 'Security Control', action: 'toggle_security', imageSrc: '/assets/images/icon-images/security.png', color: 'bg-gray-100', isLocked: isSecurityLocked },
+    { name: 'DVD Control', action: 'toggle_dvd', imageSrc: '/assets/images/icon-images/dvd.png', color: 'bg-gray-100', isLocked: isDvdLocked },
+    { name: 'Ctrl+Alt+Del Control', action: 'toggle_ctrl_alt_del', imageSrc: '/assets/images/icon-images/ctrl_alt_del.png', color: 'bg-gray-100', isLocked: isCtrlAltDelLocked },
+    { name: 'UAC Control', action: 'toggle_uac', imageSrc: '/assets/images/icon-images/uac.png', color: 'bg-gray-100', isLocked: isUacLocked }, // Combined UAC control
+    { name: 'Remote Control', action: 'remote_control', imageSrc: '/assets/images/icon-images/remote_control.png', color: 'bg-gray-100' },
   ];
 
   return (
@@ -645,7 +643,7 @@ const DeviceDetail: React.FC = () => {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{device.hostname}</h1>
-            <p className="text-gray-600">{t('device_details_management')}</p>
+            <p className="text-gray-600">Device Details & Management</p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -657,45 +655,45 @@ const DeviceDetail: React.FC = () => {
             'text-sm font-medium',
             device.isOnline ? 'text-green-700' : 'text-red-700'
           )}>
-            {device.isOnline ? t('online') : t('offline')}
+            {device.isOnline ? 'Online' : 'Offline'}
           </span>
         </div>
       </div>
 
       {/* Device Overview */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('device_information')}</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Device Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-500">{t('hostname')}</p>
+            <p className="text-sm text-gray-500">Hostname</p>
             <p className="font-medium">{device.hostname}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t('platform')}</p>
+            <p className="text-sm text-gray-500">Platform</p>
             <p className="font-medium">{device.platform}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t('system_uuid')}</p>
+            <p className="text-sm text-gray-500">System UUID</p>
             <p className="font-medium font-mono text-sm">{device.systemUuid}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t('mac_address')}</p>
+            <p className="text-sm text-gray-500">MAC Address</p>
             <p className="font-medium font-mono text-sm">{device.macAddress}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t('ip_address')}</p>
+            <p className="text-sm text-gray-500">IP Address</p>
             <p className="font-medium font-mono text-sm">{device.ipAddress}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t('department')}</p>
-            <p className="font-medium">{device.department || t('unassigned')}</p>
+            <p className="text-sm text-gray-500">Department</p>
+            <p className="font-medium">{device.department || 'Unassigned'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t('assigned_user')}</p>
-            <p className="font-medium">{device.assignedUser?.fullName || t('unassigned')}</p>
+            <p className="text-sm text-gray-500">Assigned User</p>
+            <p className="font-medium">{device.assignedUser?.fullName || 'Unassigned'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">{t('last_seen')}</p>
+            <p className="text-sm text-gray-500">Last Seen</p>
             <p className="font-medium">{safeFormatDistanceToNow(device.lastSeen)}</p>
           </div>
         </div>
@@ -703,7 +701,7 @@ const DeviceDetail: React.FC = () => {
 
       {/* Control Panel (now below Device Information) */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('remote_control')}</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Remote Control</h2>
         <div className="flex flex-wrap gap-3 justify-center">
           {controlActions.map((action) => (
             <CustomRemoteControlButton
@@ -724,12 +722,12 @@ const DeviceDetail: React.FC = () => {
         <div className="border-b border-gray-200">
           <nav className="flex space-x-8 px-6">
             {[
-              { id: 'overview', label: t('overview'), icon: Activity },
-              { id: 'hardware', label: t('hardware'), icon: Cpu },
-              { id: 'software', label: t('software'), icon: Settings },
-              { id: 'websites', label: t('blocked_websites'), icon: Shield },
-              { id: 'location', label: t('location'), icon: MapPin },
-              { id: 'chat', label: t('remote_chat'), icon: MessageCircle },
+              { id: 'overview', label: 'Overview', icon: Activity },
+              { id: 'hardware', label: 'Hardware', icon: Cpu },
+              { id: 'software', label: 'Software', icon: Settings },
+              { id: 'websites', label: 'Blocked Websites', icon: Shield },
+              { id: 'location', label: 'Location', icon: MapPin },
+              { id: 'chat', label: 'Remote Chat', icon: MessageCircle },
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -757,28 +755,28 @@ const DeviceDetail: React.FC = () => {
             <div className="space-y-6">
               {/* Operating System */}
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">{t('operating_system')}</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Operating System</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">{t('os_name')}</p>
-                    <p className="font-medium">{device.operatingSystem?.name || t('n_a')}</p>
+                    <p className="text-sm text-gray-500">OS Name</p>
+                    <p className="font-medium">{device.operatingSystem?.name || 'N/A'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">{t('version')}</p>
-                    <p className="font-medium">{device.operatingSystem?.version || t('n_a')}</p>
+                    <p className="text-sm text-gray-500">Version</p>
+                    <p className="font-medium">{device.operatingSystem?.version || 'N/A'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">{t('build_number')}</p>
-                    <p className="font-medium">{device.operatingSystem?.buildNumber || t('n_a')}</p>
+                    <p className="text-sm text-gray-500">Build Number</p>
+                    <p className="font-medium">{device.operatingSystem?.buildNumber || 'N/A'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">{t('last_boot')}</p>
+                    <p className="text-sm text-gray-500">Last Boot</p>
                     <p className="font-medium">
                       {safeFormatDistanceToNow(device.operatingSystem?.lastBootTime)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">{t('install_date')}</p>
+                    <p className="text-sm text-gray-500">Install Date</p>
                     <p className="font-medium">
                       {safeToLocaleDateString(device.operatingSystem?.installDate)}
                     </p>
@@ -788,7 +786,7 @@ const DeviceDetail: React.FC = () => {
 
               {/* Network */}
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">{t('network_adapters')}</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Network Adapters</h3>
                 <div className="space-y-4">
                   {device.network?.map((adapter, index) => (
                     <div key={index} className="bg-gray-50 p-4 rounded-lg">
@@ -800,25 +798,25 @@ const DeviceDetail: React.FC = () => {
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-red-100 text-red-800'
                         )}>
-                          {adapter.status === 'connected' ? t('connected') : t('disconnected')}
+                          {adapter.status}
                         </span>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
                         <div>
-                          <span className="text-gray-500">{t('ip')}: </span>
+                          <span className="text-gray-500">IP: </span>
                           <span className="font-mono">{adapter.ipAddress}</span>
                         </div>
                         <div>
-                          <span className="text-gray-500">{t('mac')}: </span>
+                          <span className="text-gray-500">MAC: </span>
                           <span className="font-mono">{adapter.macAddress}</span>
                         </div>
                         <div>
-                          <span className="text-gray-500">{t('dns')}: </span>
+                          <span className="text-gray-500">DNS: </span>
                           <span className="font-mono">{adapter.dnsServers.join(', ')}</span>
                         </div>
                       </div>
                     </div>
-                  )) || <p className="text-gray-500">{t('no_network_adapters_found')}</p>}
+                  )) || <p className="text-gray-500">No network adapters found</p>}
                 </div>
               </div>
             </div>
@@ -828,20 +826,20 @@ const DeviceDetail: React.FC = () => {
           {activeTab === 'hardware' && (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium text-gray-900">{t('hardware_information')}</h3>
+                <h3 className="text-lg font-medium text-gray-900">Hardware Information</h3>
                 <button
                   onClick={() => {
                     // Export hardware info
                     const hardwareData = device.hardware;
                     if (hardwareData) {
                       const csvContent = [
-                        [t('component'), t('details')].join(','),
-                        [t('manufacturer'), hardwareData.manufacturer],
-                        [t('model'), hardwareData.model],
-                        [t('cpu'), hardwareData.cpu],
-                        [t('ram'), hardwareData.ram],
-                        [t('storage'), hardwareData.storage],
-                        [t('serial_number'), hardwareData.serialNumber]
+                        ['Component', 'Details'].join(','),
+                        ['Manufacturer', hardwareData.manufacturer],
+                        ['Model', hardwareData.model],
+                        ['CPU', hardwareData.cpu],
+                        ['RAM', hardwareData.ram],
+                        ['Storage', hardwareData.storage],
+                        ['Serial Number', hardwareData.serialNumber]
                       ].join('\n');
 
                       const blob = new Blob([csvContent], { type: 'text/csv' });
@@ -856,7 +854,7 @@ const DeviceDetail: React.FC = () => {
                   className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <Download className="w-4 h-4" />
-                  <span>{t('export')}</span>
+                  <span>Export</span>
                 </button>
               </div>
               
@@ -864,35 +862,35 @@ const DeviceDetail: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-4">
                     <div>
-                      <p className="text-sm text-gray-500">{t('manufacturer')}</p>
+                      <p className="text-sm text-gray-500">Manufacturer</p>
                       <p className="font-medium">{device.hardware.manufacturer}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">{t('model')}</p>
+                      <p className="text-sm text-gray-500">Model</p>
                       <p className="font-medium">{device.hardware.model}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">{t('serial_number')}</p>
+                      <p className="text-sm text-gray-500">Serial Number</p>
                       <p className="font-medium font-mono">{device.hardware.serialNumber}</p>
                     </div>
                   </div>
                   <div className="space-y-4">
                     <div>
-                      <p className="text-sm text-gray-500">{t('cpu')}</p>
+                      <p className="text-sm text-gray-500">CPU</p>
                       <p className="font-medium">{device.hardware.cpu}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">{t('ram')}</p>
+                      <p className="text-sm text-gray-500">RAM</p>
                       <p className="font-medium">{device.hardware.ram}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-500">{t('storage')}</p>
+                      <p className="text-sm text-gray-500">Storage</p>
                       <p className="font-medium">{device.hardware.storage}</p>
                     </div>
                   </div>
                 </div>
               ) : (
-                <p className="text-gray-500">{t('no_hardware_info_available')}</p>
+                <p className="text-gray-500">No hardware information available</p>
               )}
             </div>
           )}
@@ -901,13 +899,13 @@ const DeviceDetail: React.FC = () => {
           {activeTab === 'software' && (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium text-gray-900">{t('installed_software')}</h3>
+                <h3 className="text-lg font-medium text-gray-900">Installed Software</h3>
                 <button
                   onClick={exportSoftwareList}
                   className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                 >
                   <Download className="w-4 h-4" />
-                  <span>{t('export')}</span>
+                  <span>Export</span>
                 </button>
               </div>
 
@@ -915,7 +913,7 @@ const DeviceDetail: React.FC = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <input
                   type="text"
-                  placeholder={t('search_software')}
+                  placeholder="Search software..."
                   value={softwareSearch}
                   onChange={(e) => setSoftwareSearch(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -929,7 +927,7 @@ const DeviceDetail: React.FC = () => {
                       <h4 className="font-medium text-gray-900">{software.name}</h4>
                       <p className="text-sm text-gray-600">{software.publisher} • {software.version}</p>
                       <p className="text-xs text-gray-500">
-                        {t('installed')}: {safeToLocaleDateString(software.installDate)} • {software.size}
+                        Installed: {safeToLocaleDateString(software.installDate)} • {software.size}
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -945,12 +943,12 @@ const DeviceDetail: React.FC = () => {
                         {software.isBlocked ? (
                           <>
                             <XCircle className="w-3 h-3" />
-                            <span>{t('blocked')}</span>
+                            <span>Blocked</span>
                           </>
                         ) : (
                           <>
                             <CheckCircle className="w-3 h-3" />
-                            <span>{t('allowed')}</span>
+                            <span>Allowed</span>
                           </>
                         )}
                       </button>
@@ -960,7 +958,7 @@ const DeviceDetail: React.FC = () => {
               </div>
               
               {filteredSoftware.length === 0 && (
-                <p className="text-gray-500 text-center py-8">{t('no_software_found')}</p>
+                <p className="text-gray-500 text-center py-8">No software found</p>
               )}
             </div>
           )}
@@ -969,7 +967,7 @@ const DeviceDetail: React.FC = () => {
           {activeTab === 'websites' && (
             <div className="space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium text-gray-900">{t('blocked_websites')}</h3>
+                <h3 className="text-lg font-medium text-gray-900">Blocked Websites</h3>
               </div>
 
               <div className="flex space-x-4">
@@ -977,7 +975,7 @@ const DeviceDetail: React.FC = () => {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="text"
-                    placeholder={t('search_blocked_websites')}
+                    placeholder="Search blocked websites..."
                     value={websiteSearch}
                     onChange={(e) => setWebsiteSearch(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -988,7 +986,7 @@ const DeviceDetail: React.FC = () => {
               <div className="flex space-x-4">
                 <input
                   type="text"
-                  placeholder={t('enter_website_to_block')}
+                  placeholder="Enter website to block (e.g., facebook.com)"
                   value={newWebsite}
                   onChange={(e) => setNewWebsite(e.target.value)}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -1002,7 +1000,7 @@ const DeviceDetail: React.FC = () => {
                   onClick={addBlockedWebsite}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                 >
-                  {t('block_website')}
+                  Block Website
                 </button>
               </div>
 
@@ -1013,14 +1011,14 @@ const DeviceDetail: React.FC = () => {
                       <Ban className="w-5 h-5 text-red-600" />
                       <div>
                         <p className="font-medium text-gray-900">{website}</p>
-                        <p className="text-sm text-gray-600">{t('blocked_website')}</p>
+                        <p className="text-sm text-gray-600">Blocked website</p>
                       </div>
                     </div>
                     <button
                       onClick={() => removeBlockedWebsite(website)}
                       className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium hover:bg-green-200 transition-colors"
                     >
-                      {t('unblock')}
+                      Unblock
                     </button>
                   </div>
                 ))}
@@ -1029,7 +1027,7 @@ const DeviceDetail: React.FC = () => {
               {filteredWebsites.length === 0 && (
                 <div className="text-center py-8 text-gray-500">
                   <Shield className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p>{t('no_blocked_websites')}</p>
+                  <p>No blocked websites</p>
                 </div>
               )}
             </div>
@@ -1038,18 +1036,18 @@ const DeviceDetail: React.FC = () => {
           {/* Location Tab */}
           {activeTab === 'location' && (
             <div className="space-y-6">
-              <h3 className="text-lg font-medium text-gray-900">{t('device_location')}</h3>
+              <h3 className="text-lg font-medium text-gray-900">Device Location</h3>
               <div className="h-96 rounded-lg overflow-hidden">
                 <DeviceMap device={device} />
               </div>
               {device.location && (
                 <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-gray-900 mb-2">{t('current_location')}</h4>
+                  <h4 className="font-medium text-gray-900 mb-2">Current Location</h4>
                   <p className="text-sm text-gray-600">
                     {device.location.address || `${device.location.latitude}, ${device.location.longitude}`}
                   </p>
                   <p className="text-xs text-gray-500 mt-1">
-                    {t('last_updated')}: {safeFormatDistanceToNow(device.lastSeen)}
+                    Last updated: {safeFormatDistanceToNow(device.lastSeen)}
                   </p>
                 </div>
               )}
@@ -1059,7 +1057,7 @@ const DeviceDetail: React.FC = () => {
           {/* Chat Tab */}
           {activeTab === 'chat' && (
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">{t('remote_chat')}</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">Remote Chat</h3>
               <DeviceChat deviceId={device.id} />
             </div>
           )}

@@ -6,7 +6,6 @@ import { useNotification } from '../../contexts/NotificationContext';
 import { useNavigate } from 'react-router-dom';
 import DepartmentDialog from '../Dialogs/DepartmentDialog';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 const DepartmentList: React.FC = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -19,7 +18,6 @@ const DepartmentList: React.FC = () => {
   const [departmentToDelete, setDepartmentToDelete] = useState<Department | null>(null);
   const { addNotification } = useNotification();
   const navigate = useNavigate();
-  const { t } = useTranslation(); // Use translation hook
 
   useEffect(() => {
     loadDepartments();
@@ -38,8 +36,8 @@ const DepartmentList: React.FC = () => {
       console.error('Failed to load departments:', error);
       addNotification({
         type: 'error',
-        title: t('error'),
-        message: t('failed_to_load_departments')
+        title: 'Error',
+        message: 'Failed to load departments'
       });
     } finally {
       setLoading(false);
@@ -83,14 +81,14 @@ const DepartmentList: React.FC = () => {
       setDepartments(prev => prev.filter(d => d.id !== departmentToDelete.id));
       addNotification({
         type: 'success',
-        title: t('department_deleted'),
-        message: t('department_deleted_message', { departmentName: departmentToDelete.name })
+        title: 'Department Deleted',
+        message: `${departmentToDelete.name} has been deleted`
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('delete_failed'),
-        message: t('failed_to_delete_department')
+        title: 'Delete Failed',
+        message: 'Failed to delete the department'
       });
     } finally {
       setShowConfirmDialog(false);
@@ -140,15 +138,15 @@ const DepartmentList: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('departments')}</h1>
-          <p className="text-gray-600">{t('manage_organizational_departments')}</p>
+          <h1 className="text-2xl font-bold text-gray-900">Departments</h1>
+          <p className="text-gray-600">Manage organizational departments</p>
         </div>
         <button
           onClick={handleCreateDepartment}
           className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus className="w-4 h-4" />
-          <span>{t('add_department')}</span>
+          <span>Add Department</span>
         </button>
       </div>
 
@@ -158,7 +156,7 @@ const DepartmentList: React.FC = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder={t('search_departments')}
+            placeholder="Search departments..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -186,7 +184,7 @@ const DepartmentList: React.FC = () => {
                       handleEditDepartment(department);
                     }}
                     className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                    title={t('edit_department')}
+                    title="Edit department"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -196,7 +194,7 @@ const DepartmentList: React.FC = () => {
                       handleDeleteDepartment(department);
                     }}
                     className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    title={t('delete_department')}
+                    title="Delete department"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -212,11 +210,11 @@ const DepartmentList: React.FC = () => {
               <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                 <div className="flex items-center space-x-1 text-sm text-gray-600">
                   <Users className="w-4 h-4" />
-                  <span>{t('x_users', { count: department.userCount })}</span>
+                  <span>{department.userCount} users</span>
                 </div>
                 <div className="flex items-center space-x-1 text-sm text-gray-600">
                   <Monitor className="w-4 h-4" />
-                  <span>{t('x_devices', { count: department.deviceCount })}</span>
+                  <span>{department.deviceCount} devices</span>
                 </div>
               </div>
             </div>
@@ -228,16 +226,16 @@ const DepartmentList: React.FC = () => {
       {filteredDepartments.length === 0 && !loading && (
         <div className="text-center py-12">
           <Building className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">{t('no_departments_found')}</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No departments found</h3>
           <p className="text-gray-500 mb-4">
-            {searchQuery ? t('try_adjusting_search') : t('create_first_department')}
+            {searchQuery ? 'Try adjusting your search criteria' : 'Create your first department'}
           </p>
           {!searchQuery && (
             <button
               onClick={handleCreateDepartment}
               className="text-blue-600 hover:text-blue-700 font-medium"
             >
-              {t('add_department')}
+              Add Department
             </button>
           )}
         </div>
@@ -257,9 +255,9 @@ const DepartmentList: React.FC = () => {
 
       {showConfirmDialog && departmentToDelete && (
         <ConfirmDialog
-          title={t('delete_department_title')}
-          message={t('delete_department_confirm_message', { departmentName: departmentToDelete.name })}
-          confirmText={t('delete')}
+          title="Delete Department"
+          message={`Are you sure you want to delete "${departmentToDelete.name}"? This action cannot be undone.`}
+          confirmText="Delete"
           onConfirm={confirmDelete}
           onCancel={() => {
             setShowConfirmDialog(false);

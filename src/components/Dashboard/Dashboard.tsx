@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import DevicesMap from '../Maps/DevicesMap';
 import { clsx } from 'clsx';
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 // Helper function to safely format date distance
 const safeFormatDistanceToNow = (dateString: string | undefined, addSuffix: boolean = true) => {
@@ -20,7 +19,6 @@ const Dashboard: React.FC = () => {
   const [recentDevices, setRecentDevices] = useState<Device[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { t } = useTranslation(); // Use translation hook
 
   useEffect(() => {
     loadDashboardData();
@@ -64,28 +62,28 @@ const Dashboard: React.FC = () => {
 
   const statCards = [
     {
-      title: t('total_devices'),
+      title: 'Total Devices',
       value: stats?.totalDevices || 0,
       icon: Monitor,
       color: 'bg-blue-500',
       change: '+12%'
     },
     {
-      title: t('online_devices'),
+      title: 'Online Devices',
       value: stats?.onlineDevices || 0,
       icon: Activity,
       color: 'bg-green-500',
       change: '+8%'
     },
     {
-      title: t('active_policies'),
+      title: 'Active Policies',
       value: stats?.activePolicies || 0,
       icon: Shield,
       color: 'bg-purple-500',
       change: '+5%'
     },
     {
-      title: t('pending_updates'),
+      title: 'Pending Updates',
       value: stats?.pendingUpdates || 0,
       icon: AlertCircle,
       color: 'bg-orange-500',
@@ -97,8 +95,8 @@ const Dashboard: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t('dashboard')}</h1>
-        <p className="text-gray-600">{t('welcome_back_to_app')}</p>
+        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <p className="text-gray-600">Welcome to your Endpoint Manager dashboard</p>
       </div>
 
       {/* Stats Cards */}
@@ -115,7 +113,7 @@ const Dashboard: React.FC = () => {
                     'text-sm mt-1',
                     card.change.startsWith('+') ? 'text-green-600' : 'text-red-600'
                   )}>
-                    {t('with_change_from_last_month', { change: card.change })}
+                    {card.change} from last month
                   </p>
                 </div>
                 <div className={clsx('p-3 rounded-lg', card.color)}>
@@ -133,14 +131,14 @@ const Dashboard: React.FC = () => {
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">{t('recent_online_devices')}</h2>
-              <p className="text-sm text-gray-600">{t('latest_devices_online')}</p>
+              <h2 className="text-lg font-semibold text-gray-900">Recent Online Devices</h2>
+              <p className="text-sm text-gray-600">Latest devices that came online</p>
             </div>
             <div className="p-6">
               {recentDevices.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <Monitor className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                  <p>{t('no_devices_found_dashboard')}</p>
+                  <p>No devices found</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -162,7 +160,7 @@ const Dashboard: React.FC = () => {
                       <div className="text-right">
                         <div className="flex items-center space-x-2">
                           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-sm text-gray-600">{t('online')}</span>
+                          <span className="text-sm text-gray-600">Online</span>
                         </div>
                         <p className="text-xs text-gray-500 mt-1">
                           {safeFormatDistanceToNow(device.lastSeen)}
@@ -176,7 +174,7 @@ const Dashboard: React.FC = () => {
                       className="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium"
                     >
                       <Eye className="w-4 h-4" />
-                      <span>{t('view_all_devices')}</span>
+                      <span>View all devices</span>
                     </button>
                   </div>
                 </div>
@@ -189,8 +187,8 @@ const Dashboard: React.FC = () => {
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">{t('device_locations')}</h2>
-              <p className="text-sm text-gray-600">{t('geographic_distribution')}</p>
+              <h2 className="text-lg font-semibold text-gray-900">Device Locations</h2>
+              <p className="text-sm text-gray-600">Geographic distribution</p>
             </div>
             <div className="p-6">
               <div className="h-64 rounded-lg overflow-hidden">

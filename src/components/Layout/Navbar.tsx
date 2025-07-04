@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Bell, User, Settings, LogOut, Menu, Globe } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useLanguage } from '../../contexts/LanguageContext'; // Import useLanguage
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 import { clsx } from 'clsx';
 
 interface NavbarProps {
@@ -11,13 +9,12 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle }) => {
   const { user, logout } = useAuth();
-  const { language, setLanguage } = useLanguage(); // Use language context
-  const { t } = useTranslation(); // Use translation hook
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentLanguage, setCurrentLanguage] = useState('en');
 
   const toggleLanguage = () => {
-    setLanguage(language === 'en' ? 'vi' : 'en');
+    setCurrentLanguage(prev => prev === 'en' ? 'vi' : 'en');
   };
 
   return (
@@ -37,7 +34,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle }) => {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
-              placeholder={t('search_devices_users')}
+              placeholder="Search devices, users..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -53,7 +50,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle }) => {
             className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 text-sm font-medium"
           >
             <Globe className="w-4 h-4" />
-            <span>{language.toUpperCase()}</span>
+            <span>{currentLanguage === 'en' ? 'EN' : 'VI'}</span>
           </button>
 
           {/* Notifications */}
@@ -82,11 +79,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle }) => {
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
                 <button className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                   <User className="w-4 h-4" />
-                  <span>{t('profile')}</span>
+                  <span>Profile</span>
                 </button>
                 <button className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                   <Settings className="w-4 h-4" />
-                  <span>{t('settings')}</span>
+                  <span>Settings</span>
                 </button>
                 <hr className="my-1" />
                 <button
@@ -94,7 +91,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSidebarToggle }) => {
                   className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                 >
                   <LogOut className="w-4 h-4" />
-                  <span>{t('logout')}</span>
+                  <span>Logout</span>
                 </button>
               </div>
             )}

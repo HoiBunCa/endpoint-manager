@@ -2,11 +2,9 @@ import React from 'react';
 import { X, CheckCircle, XCircle, AlertCircle, Info } from 'lucide-react';
 import { useNotification } from '../../contexts/NotificationContext';
 import { clsx } from 'clsx';
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 const NotificationCenter: React.FC = () => {
   const { notifications, removeNotification } = useNotification();
-  const { t } = useTranslation(); // Use translation hook
 
   const getIcon = (type: string) => {
     switch (type) {

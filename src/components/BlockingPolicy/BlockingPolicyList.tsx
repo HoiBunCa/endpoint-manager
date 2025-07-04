@@ -8,7 +8,6 @@ import { clsx } from 'clsx';
 import PolicyDialog from '../Dialogs/PolicyDialog';
 import AssignDevicesDialog from '../Dialogs/AssignDevicesDialog';
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 const BlockingPolicyList: React.FC = () => {
   const [policies, setPolicies] = useState<BlockingPolicy[]>([]);
@@ -21,7 +20,6 @@ const BlockingPolicyList: React.FC = () => {
   const [selectedPolicy, setSelectedPolicy] = useState<BlockingPolicy | null>(null);
   const [policyToDelete, setPolicyToDelete] = useState<BlockingPolicy | null>(null);
   const { addNotification } = useNotification();
-  const { t } = useTranslation(); // Use translation hook
 
   useEffect(() => {
     loadPolicies();
@@ -40,8 +38,8 @@ const BlockingPolicyList: React.FC = () => {
       console.error('Failed to load policies:', error);
       addNotification({
         type: 'error',
-        title: t('error'),
-        message: t('failed_to_load_blocking_policies')
+        title: 'Error',
+        message: 'Failed to load blocking policies'
       });
     } finally {
       setLoading(false);
@@ -84,14 +82,14 @@ const BlockingPolicyList: React.FC = () => {
       setPolicies(prev => prev.filter(p => p.id !== policyToDelete.id));
       addNotification({
         type: 'success',
-        title: t('policy_deleted'),
-        message: t('policy_deleted_message', { policyName: policyToDelete.name })
+        title: 'Policy Deleted',
+        message: `${policyToDelete.name} has been deleted`
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('delete_failed'),
-        message: t('failed_to_delete_policy')
+        title: 'Delete Failed',
+        message: 'Failed to delete the policy'
       });
     } finally {
       setShowConfirmDialog(false);
@@ -123,14 +121,14 @@ const BlockingPolicyList: React.FC = () => {
       setPolicies(prev => prev.map(p => p.id === policy.id ? updatedPolicy : p));
       addNotification({
         type: 'success',
-        title: t('policy_updated'),
-        message: t('policy_status_updated', { policyName: policy.name, status: updatedPolicy.isActive ? t('activated') : t('deactivated') })
+        title: 'Policy Updated',
+        message: `${policy.name} has been ${updatedPolicy.isActive ? 'activated' : 'deactivated'}`
       });
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('update_failed'),
-        message: t('failed_to_update_policy_status')
+        title: 'Update Failed',
+        message: 'Failed to update policy status'
       });
     }
   };
@@ -161,15 +159,15 @@ const BlockingPolicyList: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('blocking_policy')}</h1>
-          <p className="text-gray-600">{t('manage_website_app_blocking_policies')}</p>
+          <h1 className="text-2xl font-bold text-gray-900">Blocking Policies</h1>
+          <p className="text-gray-600">Manage website and application blocking policies</p>
         </div>
         <button
           onClick={handleCreatePolicy}
           className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
           <Plus className="w-4 h-4" />
-          <span>{t('add_policy')}</span>
+          <span>Add Policy</span>
         </button>
       </div>
 
@@ -179,7 +177,7 @@ const BlockingPolicyList: React.FC = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <input
             type="text"
-            placeholder={t('search_policies')}
+            placeholder="Search policies..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -192,16 +190,16 @@ const BlockingPolicyList: React.FC = () => {
         {filteredPolicies.length === 0 ? (
           <div className="text-center py-12">
             <Shield className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">{t('no_policies_found')}</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No policies found</h3>
             <p className="text-gray-500 mb-4">
-              {searchQuery ? t('try_adjusting_search') : t('create_first_policy')}
+              {searchQuery ? 'Try adjusting your search criteria' : 'Create your first blocking policy'}
             </p>
             {!searchQuery && (
               <button
                 onClick={handleCreatePolicy}
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
-                {t('add_policy')}
+                Add Policy
               </button>
             )}
           </div>
@@ -238,18 +236,18 @@ const BlockingPolicyList: React.FC = () => {
                             ? 'bg-green-100 text-green-800'
                             : 'bg-gray-100 text-gray-800'
                         )}>
-                          {policy.isActive ? t('active') : t('inactive')}
+                          {policy.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </div>
                       <p className="text-sm text-gray-600 mt-1">{policy.description}</p>
                       <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
                         <span>
                           {policy.type === 'website' 
-                            ? t('x_websites', { count: policy.websites?.length || 0 })
-                            : t('x_applications', { count: policy.applications?.length || 0 })}
+                            ? `${policy.websites?.length || 0} websites`
+                            : `${policy.applications?.length || 0} applications`}
                         </span>
-                        <span>{t('x_devices_assigned', { count: policy.assignedDevices?.length || 0 })}</span>
-                        <span>{t('updated')} {formatDistanceToNow(new Date(policy.updatedAt), { addSuffix: true })}</span>
+                        <span>{policy.assignedDevices?.length || 0} devices assigned</span>
+                        <span>Updated {formatDistanceToNow(new Date(policy.updatedAt), { addSuffix: true })}</span>
                       </div>
                     </div>
                   </div>
@@ -264,13 +262,13 @@ const BlockingPolicyList: React.FC = () => {
                           : 'bg-green-100 text-green-700 hover:bg-green-200'
                       )}
                     >
-                      {policy.isActive ? t('deactivate') : t('activate')}
+                      {policy.isActive ? 'Deactivate' : 'Activate'}
                     </button>
                     
                     <button
                       onClick={() => handleAssignDevices(policy)}
                       className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title={t('assign_devices')}
+                      title="Assign devices"
                     >
                       <Users className="w-4 h-4" />
                     </button>
@@ -278,7 +276,7 @@ const BlockingPolicyList: React.FC = () => {
                     <button
                       onClick={() => handleEditPolicy(policy)}
                       className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title={t('edit_policy')}
+                      title="Edit policy"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
@@ -286,7 +284,7 @@ const BlockingPolicyList: React.FC = () => {
                     <button
                       onClick={() => handleDeletePolicy(policy)}
                       className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title={t('delete_policy')}
+                      title="Delete policy"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -326,9 +324,9 @@ const BlockingPolicyList: React.FC = () => {
 
       {showConfirmDialog && policyToDelete && (
         <ConfirmDialog
-          title={t('delete_policy_title')}
-          message={t('delete_policy_confirm_message', { policyName: policyToDelete.name })}
-          confirmText={t('delete')}
+          title="Delete Policy"
+          message={`Are you sure you want to delete "${policyToDelete.name}"? This action cannot be undone.`}
+          confirmText="Delete"
           onConfirm={confirmDelete}
           onCancel={() => {
             setShowConfirmDialog(false);

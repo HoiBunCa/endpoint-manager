@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Monitor, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNotification } from '../../contexts/NotificationContext';
-import { useTranslation } from '../../hooks/useTranslation'; // Import useTranslation
 
 const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +16,6 @@ const LoginForm: React.FC = () => {
   const { login } = useAuth();
   const { addNotification } = useNotification();
   const navigate = useNavigate();
-  const { t } = useTranslation(); // Use translation hook
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -37,22 +35,22 @@ const LoginForm: React.FC = () => {
       if (success) {
         addNotification({
           type: 'success',
-          title: t('login_successful'),
-          message: t('welcome_back_to_app')
+          title: 'Login Successful',
+          message: 'Welcome back to Endpoint Manager!'
         });
         navigate('/dashboard');
       } else {
         addNotification({
           type: 'error',
-          title: t('login_failed'),
-          message: t('invalid_username_password')
+          title: 'Login Failed',
+          message: 'Invalid username or password. Please try again.' // Updated message
         });
       }
     } catch (error) {
       addNotification({
         type: 'error',
-        title: t('login_error'),
-        message: t('unexpected_error_occurred')
+        title: 'Login Error',
+        message: 'An unexpected error occurred. Please try again.'
       });
     } finally {
       setIsLoading(false);
@@ -69,8 +67,8 @@ const LoginForm: React.FC = () => {
               <Monitor className="w-6 h-6 text-white" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('welcome_back')}</h2>
-          <p className="text-gray-600">{t('sign_in_to_account')}</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome back</h2>
+          <p className="text-gray-600">Sign in to your Endpoint Manager account</p>
         </div>
 
         {/* Form */}
@@ -78,7 +76,7 @@ const LoginForm: React.FC = () => {
           <div className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                {t('username')}
+                Username
               </label>
               <input
                 id="username"
@@ -88,13 +86,13 @@ const LoginForm: React.FC = () => {
                 value={formData.username}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder={t('username_placeholder')}
+                placeholder="Enter your username" // Updated placeholder
               />
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                {t('password')}
+                Password
               </label>
               <div className="relative">
                 <input
@@ -105,7 +103,7 @@ const LoginForm: React.FC = () => {
                   value={formData.password}
                   onChange={handleChange}
                   className="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder={t('password_placeholder')}
+                  placeholder="Enter your password"
                 />
                 <button
                   type="button"
@@ -133,13 +131,13 @@ const LoginForm: React.FC = () => {
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                {t('remember_me')}
+                Remember me
               </label>
             </div>
 
             <div className="text-sm">
               <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                {t('forgot_password')}
+                Forgot your password?
               </a>
             </div>
           </div>
@@ -153,16 +151,16 @@ const LoginForm: React.FC = () => {
               {isLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                t('sign_in')
+                'Sign in'
               )}
             </button>
           </div>
 
           <div className="text-center">
             <span className="text-sm text-gray-600">
-              {t('dont_have_account')}{' '}
+              Don't have an account?{' '}
               <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
-                {t('sign_up')}
+                Sign up
               </Link>
             </span>
           </div>
@@ -170,9 +168,9 @@ const LoginForm: React.FC = () => {
 
         {/* Demo credentials */}
         <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-          <p className="text-xs text-blue-800 font-medium mb-1">{t('demo_credentials')}</p>
-          <p className="text-xs text-blue-700">{t('username_demo')} hungdv</p>
-          <p className="text-xs text-blue-700">{t('password_demo')} Test@123</p>
+          <p className="text-xs text-blue-800 font-medium mb-1">Demo Credentials:</p>
+          <p className="text-xs text-blue-700">Username: hungdv</p>
+          <p className="text-xs text-blue-700">Password: Test@123</p>
         </div>
       </div>
     </div>
